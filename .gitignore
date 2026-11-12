@@ -51,3 +51,9 @@ engine/.oasis-logs/
 
 # Local agent settings for this machine
 .claude/settings.local.json
+
+# local tools (Foundry binaries)
+/tools/
+
+# local notes with server details, never publish
+/CLAUDE.md
