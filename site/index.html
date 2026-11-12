@@ -49,6 +49,8 @@ button{font:inherit;color:inherit}
 .links{display:flex;gap:25px;font-size:10px;color:#bbbbbb;position:absolute;left:50%;transform:translateX(-50%)}
 .links a{padding:6px 0;transition:color .2s}
 .links a:hover{color:#ffffff}
+.nav-r{display:flex;align-items:center;gap:6px}
+.btn.ic{padding:5px 7px}.btn.ic svg{width:11px;height:11px;display:block}
 .btn{display:inline-flex;align-items:center;font-size:10px;font-weight:500;color:#f4f4f4;background:#101010;border:1px solid rgba(255,255,255,.1);border-radius:5px;padding:6px 9px;line-height:1;box-shadow:inset 0 1px 0 rgba(255,255,255,.05);transition:background .2s,border-color .2s}
 .btn:hover{background:#1b1b1b;border-color:rgba(255,255,255,.18)}
 .btn.light{background:var(--accent);color:var(--on-accent);border-color:transparent}
@@ -385,7 +387,7 @@ footer a{text-decoration:underline;text-underline-offset:2px}
       <span data-brand>Omen Labs</span>
     </a>
     <nav class="links" id="navLinks" aria-label="Main"></nav>
-    <a class="btn" data-cta href="#">Run a simulation</a>
+    <div class="nav-r"><a class="btn ic" data-x href="#" target="_blank" rel="noopener" aria-label="Omen Labs on X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a><a class="btn" data-cta href="#">Run a simulation</a></div>
   </div>
 </header>
 
@@ -608,7 +610,7 @@ footer a{text-decoration:underline;text-underline-offset:2px}
   </div>
 </div>
 
-<footer><span>© 2026 <span data-brand>Omen Labs</span></span><span id="credit"></span></footer>
+<footer><span>© 2026 <span data-brand>Omen Labs</span> · <a data-x href="#" target="_blank" rel="noopener">X @omen_labs</a></span><span id="credit"></span></footer>
 <p class="disc">Results are synthetic crowd reactions on a simulated pool. Not a trading signal, not financial advice.</p>
 <script>
 /* =========================================================
@@ -620,6 +622,7 @@ const CONFIG = {
   caLink: "https://ponsfamily.com/launchpad/",   // + CA
   nav: [["Use cases","#uses"],["Features","#power"],["Sample run","#sample"],["How it works","#how"],["FAQ","#faq"]],
   cta: { label: "Run a simulation", href: "#run" },
+  x: "https://x.com/omen_labs",          // X account: navbar icon + footer link
   accent: "#f2f2f2",
   maxZoom: 1.45,
   command: "uv run hyvo run --scenario launch.md --agents 50 --rounds 10",
@@ -672,6 +675,7 @@ $$("[data-brand]").forEach(e => e.textContent = CONFIG.brand);
 $$("[data-cta]").forEach(e => { e.textContent = CONFIG.cta.label; e.href = CONFIG.cta.href; });
 $("#navLinks").innerHTML = CONFIG.nav.map(([t,h]) => `<a href="${h}">${t}</a>`).join("");
 $("#credit").innerHTML = CONFIG.credit;
+$$("[data-x]").forEach(e => { if (CONFIG.x) e.href = CONFIG.x; else e.remove(); });
 $("#cmdTxt").textContent = CONFIG.command;
 $("#copyCmd").addEventListener("click", async e => {
   try { await navigator.clipboard.writeText(CONFIG.command); e.target.textContent = "Copied"; } catch { e.target.textContent = "Select it"; }
