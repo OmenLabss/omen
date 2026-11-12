@@ -361,6 +361,44 @@ main{position:relative;z-index:3;overflow-x:clip}
 .qa .a code{font:400 8.2px var(--mono);color:#cfcfcf;background:rgba(255,255,255,.05);padding:1px 4px;border-radius:3px}
 .qa .it.open .a{grid-template-rows:1fr}
 .note{margin:14px auto 0;font-size:9px;color:#777}
+/* ============ try it: in-page simulator (replays real runs) ============ */
+.try{padding-top:150px;text-align:center}
+.sim .hd .st.demo{background:rgba(255,255,255,.07);color:#cfcfcf}
+.scn{display:flex;gap:6px;padding:12px 18px 0;flex-wrap:wrap}
+.scn button{border:0;cursor:pointer;text-align:left;padding:8px 10px;border-radius:7px;background:rgba(255,255,255,.035);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);color:#bdbdbd;font-size:8.4px;line-height:1.35;flex:1 1 150px;transition:background .2s,box-shadow .2s}
+.scn button b{display:block;font:500 9.4px var(--mono);color:#ececec;margin-bottom:2px}
+.scn button.on{background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);color:#e6e6e6}
+.scn button:disabled{cursor:default;opacity:.55}.scn button.on:disabled{opacity:1}
+.simbar{display:flex;align-items:center;gap:10px;padding:12px 18px 0;font:400 7.6px var(--mono);color:#7a7a7a;flex-wrap:wrap}
+.simbar .btn{margin-left:auto;cursor:pointer}
+.simbar .btn:disabled{opacity:.5;cursor:default}
+.simgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 18px 0}
+.simgrid pre{margin:0;height:226px;overflow:hidden;border-radius:8px;background:rgba(0,0,0,.35);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);padding:10px 11px;font:400 7.4px/1.68 var(--mono);color:#bcbcbc;white-space:pre-wrap;display:flex;flex-direction:column;justify-content:flex-end}
+.simgrid pre>div{display:block}
+.simgrid pre b{color:#f2f2f2;font-weight:500}.simgrid pre .d{color:#6f6f6f}.simgrid pre .u{color:var(--up)}.simgrid pre .n{color:var(--down)}
+.simgrid pre .cur{display:inline-block;width:5px;height:8px;background:#e4e4e4;vertical-align:-1px;animation:blink 1s steps(1) infinite}
+.simr{display:flex;flex-direction:column;gap:8px;min-width:0}
+.simchart{position:relative;height:92px;border-radius:8px;background:rgba(0,0,0,.35);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+.simchart svg{position:absolute;left:10px;top:18px;width:calc(100% - 20px);height:calc(100% - 34px);overflow:visible}
+.simchart .lb{position:absolute;left:10px;bottom:3px;font:400 6.6px var(--mono);color:#666}
+.simchart .pc{position:absolute;right:10px;top:5px;font:500 9px var(--mono);color:#ddd}
+.simchart .pc.u{color:var(--up)}.simchart .pc.n{color:var(--down)}
+.simfeed{display:flex;flex-direction:column;gap:5px;height:126px;overflow:hidden}
+.simfeed .notif{animation:fin .35s ease both}
+.simfeed .notif span{white-space:normal;line-height:1.35}
+@keyframes fin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.simev{margin:10px 18px 0;padding:7px 10px;border-radius:7px;background:#f2f2f2;color:#0a0a0a;font-size:8.4px;line-height:1.4;text-align:left;display:none}
+.simev.on{display:block;animation:fin .35s ease both}
+.simev b{font:600 7.4px var(--mono);margin-right:6px}
+.simres{display:none;border-top:1px solid rgba(255,255,255,.05);margin-top:14px}
+.simres.on{display:block;animation:fin .4s ease both}
+.simres p{margin:0;padding:12px 18px 0;font-size:8.8px;line-height:1.55;color:#cfcfcf;text-align:left}
+.simres .hash{padding:8px 18px 0;font:400 7.2px var(--mono);color:#6f6f6f;text-align:left;word-break:break-all}
+.simres .acts{display:flex;gap:6px;padding:12px 18px 16px;flex-wrap:wrap}
+.simres .acts .btn{cursor:pointer}
+.simidle{padding:0 0 16px}
+@media (max-width:700px){.simgrid{grid-template-columns:1fr}.simgrid pre{height:180px}}
+
 
 /* ============ CTA ============ */
 .end{text-align:center;padding:160px 0 120px}
@@ -581,6 +619,34 @@ footer a{text-decoration:underline;text-underline-offset:2px}
   </section>
 
   <!-- ================= HOW ================= -->
+  <!-- ================= TRY IT (in-page simulator, replays real runs) ================= -->
+  <section class="try page" id="try" aria-labelledby="tryTitle">
+    <span class="chip">Try it</span>
+    <h2 class="h2" id="tryTitle">Run a simulation</h2>
+    <p class="sub">Pick a launch, hit run, and watch 50 agents trade it round by round. <br>Each one replays a real, verified run of the engine.</p>
+    <div class="wide sim">
+      <div class="hd"><b>Simulator</b><span class="st demo">demo · real recorded runs</span><span class="sd">50 agents · 10 rounds · offline</span></div>
+      <div class="scn" id="simScn" role="radiogroup" aria-label="Scenario"></div>
+      <div class="simbar"><span id="simInfo"></span><button class="btn light" id="simRun" type="button">Run simulation</button></div>
+      <div class="simgrid">
+        <pre id="simTerm" aria-live="polite"></pre>
+        <div class="simr">
+          <div class="simchart"><svg id="simSvg" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true"></svg><span class="pc" id="simPc"></span><span class="lb">price · ETH per 1M tokens</span></div>
+          <div class="simfeed" id="simFeed"></div>
+        </div>
+      </div>
+      <div class="simev" id="simEv"></div>
+      <div class="simres" id="simRes">
+        <div class="kpis" id="simKpis"></div>
+        <p id="simTurn"></p>
+        <div class="hash" id="simHash"></div>
+        <div class="acts"><button class="btn" id="simAgain" type="button">Run again</button><a class="btn light" href="#run">Run your own launch</a></div>
+      </div>
+      <div class="simidle" id="simIdle"></div>
+    </div>
+    <p class="note">Synthetic crowd reactions on a simulated pool. Not a trading signal, not financial advice.</p>
+  </section>
+
   <section class="how page" id="how" aria-labelledby="howTitle">
     <span class="chip">How a run works</span>
     <h2 class="h2" id="howTitle">From a markdown file to a proof</h2>
@@ -621,7 +687,7 @@ const CONFIG = {
   ca: "",                            // token contract address: fill in after launch, the CA pill shows up by itself
   caLink: "https://ponsfamily.com/launchpad/",   // + CA
   nav: [["Use cases","#uses"],["Features","#power"],["Sample run","#sample"],["How it works","#how"],["FAQ","#faq"]],
-  cta: { label: "Run a simulation", href: "#run" },
+  cta: { label: "Run a simulation", href: "#try" },
   x: "https://x.com/omen_labs",          // X account: navbar icon + footer link
   github: "https://github.com/OmenLabss/omen",   // source repo: navbar icon + footer link
   accent: "#f2f2f2",
@@ -699,6 +765,67 @@ function fitZoom(){
   root.style.setProperty("--zoom", Z.toFixed(3));
 }
 fitZoom();
+
+/* ---------- Try it: replays real recorded engine runs ---------- */
+const DEMO_RUNS = [{"file":"pons-creator-tax.md","id":"run_01M756D2F0J7C2FVYJ1KHEW3Z4","title":"Fictional Pons token GLINT lists with a 5% creator tax","sym":"GLINT","start":0.05,"liq":"5","seed":null,"mood":[0.14,0.35,0.36,0.02,-0.3,-0.1,0.21,-0.0,0.07,0.08],"events":{"3":"A wallet that entered in the first minute posts that it is up 3x and has taken most of its position off the table.","5":"Rumor: the creator wallet moved 20% of its GLINT to an exchange deposit address. Nothing on-chain confirms a sale yet.","8":"The creator posts that the tax drops to 1% after the first week and that tax revenue funds a liquidity lock."},"turn":"Round 2 showed the largest combined change: the price moved +20.56%, mean sentiment changed by +0.21.","summary":"A synthetic crowd of 50 agents reacted over 10 rounds. The price went from 0.05 to 0.06114 ETH per 1M tokens (+22.28%). Agents made 30 buys and 48 sells; 0.6132 ETH more went into the pool than came out. The largest net inflow came from holders (+0.865 ETH). Mean sentiment moved from +0.14 in round 1 to +0.08 in round 10. Agents wrote 193 posts that drew 463 likes. 11 swaps reverted.","hash":"0x63c217ce1cf0dce6909267aac256f8751abbcaa0326484100d0708aeba918a3a","rounds":[{"p":0.059639,"b":7,"s":0,"x":8,"h":28,"n":18,"posts":[["SK","@boldtrout68","Interesting how the loudest posts come from wallets that got in first."],["HO","@vividyak14","25 holders now. Slow and steady is how real communities form."],["SN","@jumpyweasel47","Aping 0.081 ETH before the crowd shows up. Only 5 ETH in the pool."]]},{"p":0.0719,"b":6,"s":3,"x":3,"h":32,"n":26,"posts":[["PS","@pluckybadger28","@gentleibis59 I KNEW something was off."],["HO","@mellowviper48","@gentleibis59 I hear you. The answers are in what the team ships, not in the chart."],["SK","@gentlemoth27","@mellowtrout29 what exactly is driving this besides the chart? 28 holders is not a community yet."]]},{"p":0.069806,"b":3,"s":5,"x":0,"h":35,"n":27,"posts":[["HO","@quietvole95","@sprysquid69 we've had red rounds before. Still here, still holding."],["SK","@jumpybadger17","@eagerwalrus20 confidence is not evidence. Who audited it?"],["SK","@pluckylemur66","@boldkoala18 what exactly is driving this besides the chart? 32 holders is not a community yet."]]},{"p":0.063857,"b":0,"s":5,"x":0,"h":35,"n":25,"posts":[["HO","@eagerwalrus20","@clevermoth63 I hear you. The answers are in what the team ships, not in the chart."],["SK","@sprysquid69","@mellowtrout29 +39.6% since start on 5.96 ETH of liquidity. Let's see it hold through a real exit wave."],["SK","@snowylynx67","@boldtrout68 hype noted. The swaps show 3 buys and 3 sells, thinner than the posts suggest."]]},{"p":0.060393,"b":7,"s":16,"x":0,"h":30,"n":23,"posts":[["SK","@snowylynx67","This is the red flag I mentioned. Concentrated holdings plus that news is a bad mix."],["SK","@pluckylemur66","Checked the pool myself: 5.7 ETH and 35 holders. The numbers are thinner than the hype."],["PS","@humblewalrus90","NOPE. -8.5% this round. Getting out of 100% of my bag."]]},{"p":0.062174,"b":7,"s":11,"x":0,"h":29,"n":18,"posts":[["SK","@pluckylemur66","@boldkoala18 what exactly is driving this besides the chart? 30 holders is not a community yet."],["PS","@cosmicturtle24","Why is it bleeding?? Dumping 67%, can't watch this."],["SN","@calmkoala89","Exiting 83% right here. Fast in, fast out."]]},{"p":0.062001,"b":0,"s":2,"x":0,"h":27,"n":17,"posts":[["SN","@sleepyibis33","@mellowtrout29 the feed is waking up, I'm watching the same flow."],["SK","@cleversquid89","Checked the pool myself: 5.65 ETH and 29 holders. The numbers are thinner than the hype."],["SN","@calmkoala89","@eagerwalrus20 same read here. 3 buys in the last swaps."]]},{"p":0.061646,"b":0,"s":2,"x":0,"h":27,"n":12,"posts":[["SK","@snowylynx67","Price is +24.0% since start on a pool with 5.65 ETH. Thin pools make any chart look exciting."],["HO","@fuzzytapir86","27 holders now. Slow and steady is how real communities form."],["SK","@zestyvole63","Checked the pool myself: 5.65 ETH and 27 holders. The numbers are thinner than the hype."]]},{"p":0.061152,"b":0,"s":3,"x":0,"h":27,"n":13,"posts":[["SN","@calmkoala89","Exiting 62% right here. Fast in, fast out."],["SK","@gentlemoth27","@mellowtrout29 +23.3% since start on 5.63 ETH of liquidity. Let's see it hold through a real exit wave."],["HO","@snowybeaver87","@sprysquid69 doubts are healthy, but 27 holders didn't show up by accident."]]},{"p":0.061138,"b":0,"s":1,"x":0,"h":27,"n":14,"posts":[["SN","@sleepyibis33","Not touching my position yet. +22.3% since start."],["PS","@icybison78","@crispibis35 wait, is that confirmed?? Seeing -0.8% on my side too."],["HO","@snowymole72","Still holding. +22.3% since start is noise next to where this community could be in a few weeks."]]}]},{"file":"moss-team-rumor.md","id":"run_01M77VP58TYRCNFE6631QB8DR9","title":"A rumor says the team behind fictional token MOSS is selling","sym":"MOSS","start":0.08,"liq":"8","seed":null,"mood":[0.12,0.34,0.15,-0.16,-0.27,0.09,0.08,0.1,0.1,0.1],"events":{"3":"A second anonymous account repeats the rumor and says it has \"inside info\". It shows nothing new.","5":"On-chain data shows the team wallet moved 3% of the supply to a new wallet. It is not an exchange address, and nothing has been sold.","8":"The team posts that the transfer funds a six-month vesting contract, and publishes the contract address."},"turn":"Round 3 showed the largest combined change: the price moved -15.14%, mean sentiment changed by -0.20, net flow changed direction, an event was injected (\"A second anonymous account repeats the rumor and says it has \"inside info\". It shows nothing new.\").","summary":"A synthetic crowd of 50 agents reacted over 10 rounds. The price went from 0.08 to 0.08401 ETH per 1M tokens (+5.01%). Agents made 26 buys and 38 sells; 0.2179 ETH more went into the pool than came out. The largest net inflow came from holders (+0.674 ETH). Mean sentiment moved from +0.12 in round 1 to +0.10 in round 10. Agents wrote 156 posts that drew 428 likes. 12 swaps reverted.","hash":"0x594f150a4cd278227d7a1e5aafa4e3287486e10c08e0619d8dbde8859f76a39f","rounds":[{"p":0.095531,"b":5,"s":0,"x":9,"h":29,"n":18,"posts":[["SK","@icyibex97","Interesting how the loudest posts come from wallets that got in first."],["HO","@hastyowl55","25 holders now. Slow and steady is how real communities form."],["HO","@boldibex47","Zooming out: round 1 of 10 and the feed gets busier every time."]]},{"p":0.113289,"b":9,"s":2,"x":3,"h":32,"n":23,"posts":[["PS","@briskotter93","@pluckywombat49 this is exactly what scares me. Anyone know more?"],["HO","@keentapir96","@waryviper34 fair question. I judge the team's work, not one candle."],["SK","@daringtrout76","@jumpyllama35 what exactly is driving this besides the chart? 29 holders is not a community yet."]]},{"p":0.09614,"b":1,"s":12,"x":0,"h":32,"n":25,"posts":[["HO","@boldibex47","@waryviper34 doubts are healthy, but 32 holders didn't show up by accident."],["SK","@steadylynx89","Unverified news moving a thin pool. This is exactly the setup I keep warning about."],["SN","@fuzzymoth82","Momentum is real: +18.6% last round. Jumped in with 0.055 ETH."]]},{"p":0.083296,"b":6,"s":17,"x":0,"h":26,"n":22,"posts":[["SK","@hastymoth17","@crispmagpie53 hype noted. The swaps show 1 buys and 5 sells, thinner than the posts suggest."],["SK","@noisyokapi90","@fuzzynarwhal36 +20.2% since start on 8.78 ETH of liquidity. Let's see it hold through a real exit wave."],["SK","@steadylynx89","-15.1% on a pool with 8.78 ETH. Thin pools swing hard in both directions."]]},{"p":0.08401,"b":5,"s":7,"x":0,"h":23,"n":21,"posts":[["PS","@vividlynx84","WAIT. Did everyone see the news?? This is how it starts."],["SK","@loftyibis43","@crispmagpie53 +4.1% since start on 8.18 ETH of liquidity. Let's see it hold through a real exit wave."],["HO","@noisylynx53","Red round, quiet add: 0.02 ETH. Nothing about the project changed in the last hour."]]},{"p":0.08401,"b":0,"s":0,"x":0,"h":23,"n":18,"posts":[["SK","@steadylynx89","@fuzzynarwhal36 what exactly is driving this besides the chart? 23 holders is not a community yet."],["SN","@fuzzymoth82","Still riding this one. 23 holders and plenty of eyes on it."],["PS","@snowytoad50","My position is +0.0113 ETH and I'm sweating. Anyone have info?"]]},{"p":0.08401,"b":0,"s":0,"x":0,"h":23,"n":13,"posts":[["SK","@loftyibis43","@crispmagpie53 confidence is not evidence. Who audited it?"],["HO","@crispzebra79","Nothing changed for me this round. The team keeps shipping, we keep holding."],["SN","@hastysloth29","Watching the flow, bag still on."]]},{"p":0.08401,"b":0,"s":0,"x":0,"h":23,"n":7,"posts":[["SK","@steadylynx89","23 holders after 8 rounds. Who holds the top wallets? Nobody has shown the distribution."],["HO","@crispzebra79","Zooming out: round 8 of 10 and the feed gets busier every time."],["SN","@hastysloth29","@crispmagpie53 the feed is waking up, I'm watching the same flow."]]},{"p":0.08401,"b":0,"s":0,"x":0,"h":23,"n":7,"posts":[["SN","@mellowzebra30","@jumpyllama35 same read here. 2 buys in the last swaps."],["HO","@crispzebra79","@noisyokapi90 doubts are healthy, but 23 holders didn't show up by accident."],["PS","@zestyotter88","@waryviper34 I KNEW something was off."]]},{"p":0.08401,"b":0,"s":0,"x":0,"h":23,"n":2,"posts":[["HO","@boldibex47","@hastyowl55 we've had red rounds before. Still here, still holding."],["PS","@fizzyotter58","@fuzzynarwhal36 I KNEW something was off."]]}]},{"file":"orbit-exchange-listing.md","id":"run_01M77VPMHHJMZ1HC87QWEJ3Y4X","title":"Fictional token ORBIT gets a surprise listing on a small exchange","sym":"ORBIT","start":0.12,"liq":"12","seed":null,"mood":[0.16,0.4,0.39,-0.05,-0.06,0.26,0.16,0.15,0.16,0.16],"events":{"3":"Northgate opens deposits. A large wallet moves 4% of the supply to its deposit address.","5":"Trading opens on Northgate. Its first reported price is 6% above the pool, on thin volume.","8":"Northgate pauses withdrawals of ORBIT for \"scheduled maintenance\" and gives no end time."},"turn":"Round 4 showed the largest combined change: the price moved -15.48%, mean sentiment changed by -0.44.","summary":"A synthetic crowd of 50 agents reacted over 10 rounds. The price went from 0.12 to 0.1281 ETH per 1M tokens (+6.75%). Agents made 41 buys and 35 sells; 0.4067 ETH more went into the pool than came out. The largest net outflow came from panic sellers (-0.829 ETH). Mean sentiment moved from +0.16 in round 1 to +0.16 in round 10. Agents wrote 144 posts that drew 446 likes.","hash":"0xb187904158abee39ba30fa13f42da368a25015012a81d363ece6a30829f21560","rounds":[{"p":0.13606,"b":8,"s":0,"x":0,"h":33,"n":15,"posts":[["SN","@noisypanda19","Watching the flow, bag still on."],["SN","@sprymagpie26","Sniped a 0.089 ETH bag while the feed was still asleep."],["PS","@loftyalpaca44","Not sure about this anymore. Something feels off."]]},{"p":0.163608,"b":8,"s":0,"x":0,"h":35,"n":21,"posts":[["SK","@warymagpie85","@rapidbison50 what exactly is driving this besides the chart? 33 holders is not a community yet."],["HO","@eagerraccoon46","@loftybeaver11 I hear you. The answers are in what the team ships, not in the chart."],["PS","@vividheron80","@loftybeaver11 wait, is that confirmed?? Seeing +13.4% on my side too."]]},{"p":0.14773,"b":6,"s":6,"x":0,"h":38,"n":30,"posts":[["HO","@calmbison15","@boldegret59 we've had red rounds before. Still here, still holding."],["SK","@loftygecko54","@rapidbison50 +36.3% since start on 14.01 ETH of liquidity. Let's see it hold through a real exit wave."],["HO","@steadyraccoon52","@boldegret59 fair question. I judge the team's work, not one candle."]]},{"p":0.124856,"b":10,"s":18,"x":0,"h":35,"n":25,"posts":[["SK","@loftybeaver11","@rapidbison50 what exactly is driving this besides the chart? 38 holders is not a community yet."],["SK","@loftygecko54","@rapidbison50 +23.1% since start on 13.31 ETH of liquidity. Let's see it hold through a real exit wave."],["HO","@steadyraccoon52","We've seen shakeouts before. Picking up a little more (0.04 ETH), then back to reading the docs."]]},{"p":0.128101,"b":9,"s":11,"x":0,"h":30,"n":17,"posts":[["SK","@loftygecko54","@boldbeaver48 +4.0% since start on 12.24 ETH of liquidity. Let's see it hold through a real exit wave."],["SK","@vividtrout12","Pulling the pool numbers myself instead of trusting the feed."],["SK","@keensloth24","Reduced exposure by 30%. Concentration risk is not a theory."]]},{"p":0.128101,"b":0,"s":0,"x":0,"h":30,"n":14,"posts":[["HO","@calmbison15","@zestyibis35 we've had red rounds before. Still here, still holding."],["SK","@loftygecko54","@boldbeaver48 +6.8% since start on 12.4 ETH of liquidity. Let's see it hold through a real exit wave."],["SK","@shyowl12","@rapidbison50 hype noted. The swaps show 1 buys and 5 sells, thinner than the posts suggest."]]},{"p":0.128101,"b":0,"s":0,"x":0,"h":30,"n":10,"posts":[["SN","@sleepyzebra76","@boldbeaver48 the feed is waking up, I'm watching the same flow."],["HO","@steadyraccoon52","@boldegret59 doubts are healthy, but 30 holders didn't show up by accident."],["SK","@warymagpie85","1 buys and 5 sells in the recent swaps. Not exactly broad demand."]]},{"p":0.128101,"b":0,"s":0,"x":0,"h":30,"n":4,"posts":[["HO","@calmbison15","@loftybeaver11 we've had red rounds before. Still here, still holding."],["HO","@rapidbison50","@quietibis98 I hear you. The answers are in what the team ships, not in the chart."],["SN","@boldbeaver48","@rapidbison50 the feed is waking up, I'm watching the same flow."]]},{"p":0.128101,"b":0,"s":0,"x":0,"h":30,"n":5,"posts":[["SK","@vividtrout12","Checked the pool myself: 12.4 ETH and 30 holders. The numbers are thinner than the hype."],["SK","@noisytoad63","30 holders after 9 rounds. Who holds the top wallets? Nobody has shown the distribution."],["PS","@daringsquid23","OK this looks better. 30 holders and nobody is running for the exit yet."]]},{"p":0.128101,"b":0,"s":0,"x":0,"h":30,"n":3,"posts":[["HO","@zestyibis35","Looked at the pool properly: 12.4 ETH of liquidity and 30 holders. Healthier than the feed suggests."],["SN","@hastystoat81","@boldbeaver48 early wallets know. Pool is still only 12.4 ETH."],["SK","@loftybeaver11","30 holders after 10 rounds. Who holds the top wallets? Nobody has shown the distribution."]]}]}];
+(() => {
+  const scn = $("#simScn"), term = $("#simTerm"), svg = $("#simSvg"), feed = $("#simFeed"), ev = $("#simEv"),
+        res = $("#simRes"), runB = $("#simRun"), info = $("#simInfo"), pcEl = $("#simPc"), idle = $("#simIdle");
+  const BLURB = { GLINT: "5% creator tax, then a rug rumor at round 5", MOSS: "a rumor says the team is selling", ORBIT: "a surprise listing on a small exchange" };
+  const short = (t, sym) => BLURB[sym] || t;
+  const esc = t => String(t).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+  let cur = 0, busy = false, token = 0;
+  scn.innerHTML = DEMO_RUNS.map((r,i) => `<button type="button" role="radio" data-i="${i}"><b>$${r.sym}</b>${esc(short(r.title, r.sym))}</button>`).join("");
+  const lock = on => { runB.disabled = on; [...scn.children].forEach(b => b.disabled = on); };
+  function chart(r, upto){
+    const v = [r.start, ...r.rounds.map(x => x.p)], lo = Math.min(...v)*.98, hi = Math.max(...v)*1.02;
+    const X = i => i*10, Y = p => 60 - 60*(p-lo)/(hi-lo);
+    const pts = v.slice(0, upto+1).map((p,i) => `${X(i)},${Y(p).toFixed(2)}`);
+    const evs = Object.keys(r.events).map(Number).filter(k => k <= upto).map(k => `<line x1="${X(k)}" x2="${X(k)}" y1="0" y2="60" stroke="rgba(255,255,255,.2)" stroke-width="1" vector-effect="non-scaling-stroke" stroke-dasharray="2 2"/>`).join("");
+    svg.innerHTML = evs + (pts.length > 1 ? `<polyline points="${pts.join(" ")}" fill="none" stroke="#f2f2f2" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>` : "");
+    const ch = (v[upto]/r.start - 1)*100;
+    pcEl.textContent = upto ? `${ch>=0?"+":""}${ch.toFixed(1)}%` : ""; pcEl.className = "pc " + (ch>=0 ? "u" : "n");
+  }
+  function reset(){
+    token++; busy = false; lock(false); const r = DEMO_RUNS[cur];
+    res.classList.remove("on"); ev.classList.remove("on"); idle.style.display = "";
+    info.textContent = `${r.file} · ${r.liq} ETH pool · ${Object.keys(r.events).length} events`;
+    term.innerHTML = `<div><span class="d">$ hyvo run --scenario ${r.file} --agents 50 --rounds 10 --offline</span>\n<span class="d">ready. press "Run simulation".</span> <span class="cur"></span></div>`;
+    feed.innerHTML = ""; chart(r, 0);
+  }
+  const pick = i => { if (busy) return; cur = i; [...scn.children].forEach((b,j) => { b.classList.toggle("on", j===i); b.setAttribute("aria-checked", j===i); }); reset(); };
+  scn.addEventListener("click", e => { const b = e.target.closest("button"); if (b) pick(+b.dataset.i); });
+  async function run(){
+    if (busy) return; busy = true; const my = ++token, r = DEMO_RUNS[cur], live = () => my === token;
+    lock(true); res.classList.remove("on"); idle.style.display = "none";
+    const lines = [`<b>$ hyvo run --scenario ${r.file} --agents 50 --rounds 10 --offline</b>`];
+    const show = () => { term.innerHTML = "<div>" + lines.slice(-15).join("\n") + ' <span class="cur"></span></div>'; };
+    const say = async (l, ms) => { lines.push(l); show(); if (!reduce) await wait(ms); };
+    feed.innerHTML = ""; chart(r, 0);
+    await say(`<span class="d">model: offline rules · 50 agents x 10 rounds</span>`, 450); if (!live()) return;
+    await say(`<span class="d">chain 4663 up · pool ${r.liq} ETH / $${r.sym} · 50 wallets funded</span>`, 650); if (!live()) return;
+    for (let i = 0; i < r.rounds.length; i++){
+      const x = r.rounds[i], prev = i ? r.rounds[i-1].p : r.start, n = i+1; let ch = (x.p/prev - 1)*100; if (Math.abs(ch) < .05) ch = 0;
+      if (r.events[n]){ ev.innerHTML = `<b>EVENT · R${n}</b>${esc(r.events[n])}`; ev.classList.add("on"); }
+      else if (!r.events[n-1]) ev.classList.remove("on");
+      feed.innerHTML = x.posts.map(([t,h,txt]) => `<div class="notif"><i>${t}</i><span>${esc(h)} <em>${esc(txt)}</em></span><kbd>R${n}</kbd></div>`).join("");
+      chart(r, n);
+      await say(`round ${String(n).padStart(2)}/10  <span class="${ch>=0?"u":"n"}">${ch>=0?"+":"-"}${Math.abs(ch).toFixed(1).padStart(4)}%</span>  ${String(x.b).padStart(2)} buys ${String(x.s).padStart(2)} sells  ${String(x.h).padStart(2)} holders`, r.events[n] ? 1900 : 1000);
+      if (!live()) return;
+    }
+    ev.classList.remove("on");
+    await say(`<span class="u">✓ complete</span> <span class="d">· hash ${r.hash.slice(0,18)}… · $0.00</span>`, 300); if (!live()) return;
+    await say(`<span class="d">$ hyvo verify run.json</span>  <span class="u">ok</span>`, 400); if (!live()) return;
+    const B = r.rounds.reduce((a,x) => a+x.b, 0), Sx = r.rounds.reduce((a,x) => a+x.s, 0), fin = (r.rounds[9].p/r.start - 1)*100;
+    $("#simKpis").innerHTML = `<div><small>PRICE</small><b class="${fin>=0?"u":"n"}">${fin>=0?"+":""}${fin.toFixed(1)}%</b></div><div><small>BUYS</small><b>${B}</b></div><div><small>SELLS</small><b>${Sx}</b></div><div><small>HOLDERS</small><b>${r.rounds[9].h}</b></div>`;
+    $("#simTurn").textContent = "Turning point: " + r.turn.replace(/^Round (\d+) showed/, "round $1 showed");
+    $("#simHash").textContent = `run ${r.id} · hash ${r.hash}`;
+    res.classList.add("on"); busy = false; lock(false);
+  }
+  runB.addEventListener("click", run);
+  $("#simAgain").addEventListener("click", () => { reset(); run(); });
+  pick(0);
+})();
 
 /* ---------- hero terminal ---------- */
 (() => {
