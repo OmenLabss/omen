@@ -1,3 +1,21 @@
+# Omen Labs
+
+**See the crowd before the chart.** Omen runs AI-trader crowd simulations of a token launch on a local copy of
+Robinhood Chain. Site: [omenlabs.run](https://omenlabs.run)
+
+Omen is a fork of [Hyvo](https://github.com/hyvorun/hyvo) (which builds on [MiroFish](https://github.com/666ghj/MiroFish)).
+The engine is Hyvo's, unchanged. Omen adds its own landing page (`site/`) and a one-command runner (`sim.ps1`).
+Licensed AGPL-3.0, like Hyvo.
+
+```powershell
+.\sim.ps1                                         # offline example, ~20 s, $0
+cd engine; uv run --no-sync hyvo verify .runs\<runId>\run.json
+```
+
+Everything below is Hyvo's original README.
+
+---
+
 <p align="center">
   <a href="https://hyvo.run"><img src="docs/assets/banner.png" alt="Hyvo: a parallel world for Robinhood Chain" width="100%"></a>
 </p>
